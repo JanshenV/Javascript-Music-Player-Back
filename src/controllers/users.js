@@ -1,11 +1,13 @@
 const knex = require('../database/connection');
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const {
     yupCreateUser,
+    yupUserLogin,
 } = require('../validations/yupUser');
 
-
+// Controllers
 async function SecondValidation(email, password) {
     let existingEmail = await knex('users')
         .where({ email })
@@ -30,7 +32,6 @@ async function SecondValidation(email, password) {
         return { encryptedPassword }
     };
 };
-
 
 async function CreateUser(req, res) {
     let {
@@ -77,7 +78,37 @@ async function CreateUser(req, res) {
 
 };
 
+async function UserLogin(req, res) {
+    const { email, password } = req.body;
+
+    try {
+        await yupUserLogin.validate(req.body);
+
+        const { existingEmail: User } = await SecondValidation(email);
+
+        if (User) {
+            const passwordCompare = await bcrypt.compare(password, User.password);
+            if (!passwordCompare) return res.status(401).json({
+                message: 'Email e senha não conferem.'
+            });
+        };
+
+        if (!User) return res.status(404).json({
+            message: 'Email e senha não conferem.'
+        });
+
+        const token = jwt.sign({ id: User.id },
+            process.env.SECRET_JWT, { expiresIn: '8h' });
+
+        return res.status(200).json({ token });
+
+    } catch ({ message }) {
+        return res.status(400).json({ message });
+    };
+};
+
 
 module.exports = {
     CreateUser,
+    UserLogin
 };
