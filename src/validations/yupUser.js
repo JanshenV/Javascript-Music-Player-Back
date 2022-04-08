@@ -11,8 +11,14 @@ const yupUserLogin = yup.object().shape({
     password: yup.string().min(9).required()
 });
 
+const yupUserEdit = yup.object().shape({
+    username: yup.string(),
+    email: yup.string().email(),
+    password: yup.string()
+});
 
 module.exports = {
     yupCreateUser,
-    yupUserLogin
-}
+    yupUserLogin,
+    yupUserEdit
+};

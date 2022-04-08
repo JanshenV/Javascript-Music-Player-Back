@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const {
     yupCreateUser,
     yupUserLogin,
+    yupUserEdit
 } = require('../validations/yupUser');
 
 // Controllers
@@ -111,10 +112,79 @@ async function UserProfile(req, res) {
     return res.status(200).json(req.user);
 };
 
+async function UserEdit(req, res) {
+    let {
+        username,
+        email,
+        password
+    } = req.body;
+
+    const user = req.user;
+    const reqBodyLength = Object.keys(req.body).length;
+
+    if (reqBodyLength === 0) return res.status(400).json({
+        message: 'Ao menos um campo necessário para editar usuário.'
+    });
+
+    try {
+        await yupUserEdit.validate(req.body);
+
+        if (username) {
+            if (username.length < 3 || username.length > 55) return res.status(400).json({
+                message: 'Username inválido.'
+            });
+        };
+
+        if (email) {
+            const { existingEmail } = await SecondValidation(email);
+            if (existingEmail && email !== user.email) return res.status(400).json({
+                message: 'Email já sendo utilizado por outro usuário.'
+            });
+        };
+
+        if (password) {
+            if (password.length < 9) return res.status(400).json({
+                message: 'Password tem de ter no mínimo 9 caracteres.'
+            });
+
+            const { validateResponse, encryptedPassword } = await SecondValidation("", password);
+            if (validateResponse) return res.status(400).json({
+                message: validateResponse
+            });
+
+            password = encryptedPassword;
+        };
+
+        const editUser_Data = {
+            username: username ? username : user.username,
+            email: email ? email : user.email,
+            password: password ? password : user.password
+        };
+
+        const updatingUserData = await knex('users')
+            .where({ id: user.id })
+            .update(editUser_Data)
+            .returning(['id', 'username', 'email']);
+
+
+
+        return res.status(200).json({
+            message: 'Usuário alterado com sucesso.',
+            userData: updatingUserData
+        });
+
+    } catch ({ message }) {
+        return res.status(400).json({
+            message
+        })
+    }
+};
+
 
 
 module.exports = {
     CreateUser,
     UserLogin,
-    UserProfile
+    UserProfile,
+    UserEdit
 };
