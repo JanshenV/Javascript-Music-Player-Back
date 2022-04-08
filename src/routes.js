@@ -1,11 +1,11 @@
 const express = require('express');
 const routes = express();
 
+const {
+    CreateUser,
+} = require('./controllers/users');
 
-//Imports
-
-//Routes usage
-
+routes.post('/users', CreateUser);
 
 
 module.exports = routes;
