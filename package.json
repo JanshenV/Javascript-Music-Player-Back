@@ -1,0 +1,35 @@
+{
+  "name": "Javascript-Music-Player-Back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JanshenV/Javascript-Music-Player-Back.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JanshenV/Javascript-Music-Player-Back/issues"
+  },
+  "homepage": "https://github.com/JanshenV/Javascript-Music-Player-Back#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "handlebars": "^4.7.7",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^1.0.5",
+    "nodemailer": "^6.7.3",
+    "nodemailer-express-handlebars": "^5.0.0",
+    "nodemon": "^2.0.15",
+    "pg": "^8.7.3",
+    "yup": "^0.32.11",
+    "yup-locales": "^1.2.3"
+  }
+}
