@@ -1,7 +1,6 @@
 const knex = require('../database/connection');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const nodemailer = require('../services/nodemailer');
 
 const {
     yupCreateUser,
@@ -9,23 +8,8 @@ const {
     yupUserEdit
 } = require('../validations/yupUser');
 const SecondValidation = require('../validations/secondValidation');
+const EmailWithNodemailer = require('../services/nodemailerSignUp');
 
-async function EmailWithNodemailer(email, username) {
-    const data = {
-        from: 'Javascript Music Player <do-not-reply@Javascript-music-player.com>',
-        to: `${email}`,
-        subject: 'Bem vindo a JMP',
-        template: 'signup',
-        context: {
-            username,
-            email
-        }
-    };
-
-
-    nodemailer.sendMail(data);
-};
-// Controllers
 
 async function CreateUser(req, res) {
     let {
