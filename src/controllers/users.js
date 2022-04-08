@@ -1,6 +1,11 @@
 const knex = require('../database/connection');
 const bcrypt = require('bcrypt');
 
+const {
+    yupCreateUser,
+} = require('../validations/yupUser');
+
+
 async function SecondValidation(email, password) {
     let existingEmail = await knex('users')
         .where({ email })
